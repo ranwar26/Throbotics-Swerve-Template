@@ -13,7 +13,7 @@
 
 package frc.robot.subsystems.drive;
 
-import static frc.robot.subsystems.drive.DriveConstants.*;
+import frc.robot.Constants.DriveConstants;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
@@ -34,13 +34,11 @@ public class Module {
   public Module(ModuleIO io, int index) {
     this.io = io;
     this.index = index;
-    driveDisconnectedAlert =
-        new Alert(
-            "Disconnected drive motor on module " + Integer.toString(index) + ".",
-            AlertType.kError);
-    turnDisconnectedAlert =
-        new Alert(
-            "Disconnected turn motor on module " + Integer.toString(index) + ".", AlertType.kError);
+    driveDisconnectedAlert = new Alert(
+        "Disconnected drive motor on module " + Integer.toString(index) + ".",
+        AlertType.kError);
+    turnDisconnectedAlert = new Alert(
+        "Disconnected turn motor on module " + Integer.toString(index) + ".", AlertType.kError);
   }
 
   public void periodic() {
@@ -51,7 +49,7 @@ public class Module {
     int sampleCount = inputs.odometryTimestamps.length; // All signals are sampled together
     odometryPositions = new SwerveModulePosition[sampleCount];
     for (int i = 0; i < sampleCount; i++) {
-      double positionMeters = inputs.odometryDrivePositionsRad[i] * wheelRadiusMeters;
+      double positionMeters = inputs.odometryDrivePositionsRad[i] * DriveConstants.wheelRadiusMeters;
       Rotation2d angle = inputs.odometryTurnPositions[i];
       odometryPositions[i] = new SwerveModulePosition(positionMeters, angle);
     }
@@ -61,18 +59,23 @@ public class Module {
     turnDisconnectedAlert.set(!inputs.turnConnected);
   }
 
-  /** Runs the module with the specified setpoint state. Mutates the state to optimize it. */
+  /**
+   * Runs the module with the specified setpoint state. Mutates the state to
+   * optimize it.
+   */
   public void runSetpoint(SwerveModuleState state) {
     // Optimize velocity setpoint
     state.optimize(getAngle());
     state.cosineScale(inputs.turnPosition);
 
     // Apply setpoints
-    io.setDriveVelocity(state.speedMetersPerSecond / wheelRadiusMeters);
+    io.setDriveVelocity(state.speedMetersPerSecond / DriveConstants.wheelRadiusMeters);
     io.setTurnPosition(state.angle);
   }
 
-  /** Runs the module with the specified output while controlling to zero degrees. */
+  /**
+   * Runs the module with the specified output while controlling to zero degrees.
+   */
   public void runCharacterization(double output) {
     io.setDriveOpenLoop(output);
     io.setTurnPosition(new Rotation2d());
@@ -91,12 +94,12 @@ public class Module {
 
   /** Returns the current drive position of the module in meters. */
   public double getPositionMeters() {
-    return inputs.drivePositionRad * wheelRadiusMeters;
+    return inputs.drivePositionRad * DriveConstants.wheelRadiusMeters;
   }
 
   /** Returns the current drive velocity of the module in meters per second. */
   public double getVelocityMetersPerSec() {
-    return inputs.driveVelocityRadPerSec * wheelRadiusMeters;
+    return inputs.driveVelocityRadPerSec * DriveConstants.wheelRadiusMeters;
   }
 
   /** Returns the module position (turn angle and drive position). */

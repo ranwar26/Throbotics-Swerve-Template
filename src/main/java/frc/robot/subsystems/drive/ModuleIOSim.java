@@ -13,7 +13,7 @@
 
 package frc.robot.subsystems.drive;
 
-import static frc.robot.subsystems.drive.DriveConstants.*;
+import frc.robot.Constants.DriveConstants;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
@@ -29,22 +29,20 @@ public class ModuleIOSim implements ModuleIO {
 
   private boolean driveClosedLoop = false;
   private boolean turnClosedLoop = false;
-  private PIDController driveController = new PIDController(driveSimP, 0, driveSimD);
-  private PIDController turnController = new PIDController(turnSimP, 0, turnSimD);
+  private PIDController driveController = new PIDController(DriveConstants.driveSimP, 0, DriveConstants.driveSimD);
+  private PIDController turnController = new PIDController(DriveConstants.turnSimP, 0, DriveConstants.turnSimD);
   private double driveFFVolts = 0.0;
   private double driveAppliedVolts = 0.0;
   private double turnAppliedVolts = 0.0;
 
   public ModuleIOSim() {
     // Create drive and turn sim models
-    driveSim =
-        new DCMotorSim(
-            LinearSystemId.createDCMotorSystem(driveGearbox, 0.025, driveMotorReduction),
-            driveGearbox);
-    turnSim =
-        new DCMotorSim(
-            LinearSystemId.createDCMotorSystem(turnGearbox, 0.004, turnMotorReduction),
-            turnGearbox);
+    driveSim = new DCMotorSim(
+        LinearSystemId.createDCMotorSystem(DriveConstants.driveGearbox, 0.025, DriveConstants.driveMotorReduction),
+        DriveConstants.driveGearbox);
+    turnSim = new DCMotorSim(
+        LinearSystemId.createDCMotorSystem(DriveConstants.turnGearbox, 0.004, DriveConstants.turnMotorReduction),
+        DriveConstants.turnGearbox);
 
     // Enable wrapping for turn PID
     turnController.enableContinuousInput(-Math.PI, Math.PI);
@@ -54,8 +52,7 @@ public class ModuleIOSim implements ModuleIO {
   public void updateInputs(ModuleIOInputs inputs) {
     // Run closed-loop control
     if (driveClosedLoop) {
-      driveAppliedVolts =
-          driveFFVolts + driveController.calculate(driveSim.getAngularVelocityRadPerSec());
+      driveAppliedVolts = driveFFVolts + driveController.calculate(driveSim.getAngularVelocityRadPerSec());
     } else {
       driveController.reset();
     }
@@ -85,10 +82,11 @@ public class ModuleIOSim implements ModuleIO {
     inputs.turnAppliedVolts = turnAppliedVolts;
     inputs.turnCurrentAmps = Math.abs(turnSim.getCurrentDrawAmps());
 
-    // Update odometry inputs (50Hz because high-frequency odometry in sim doesn't matter)
-    inputs.odometryTimestamps = new double[] {Timer.getFPGATimestamp()};
-    inputs.odometryDrivePositionsRad = new double[] {inputs.drivePositionRad};
-    inputs.odometryTurnPositions = new Rotation2d[] {inputs.turnPosition};
+    // Update odometry inputs (50Hz because high-frequency odometry in sim doesn't
+    // matter)
+    inputs.odometryTimestamps = new double[] { Timer.getFPGATimestamp() };
+    inputs.odometryDrivePositionsRad = new double[] { inputs.drivePositionRad };
+    inputs.odometryTurnPositions = new Rotation2d[] { inputs.turnPosition };
   }
 
   @Override
@@ -106,7 +104,8 @@ public class ModuleIOSim implements ModuleIO {
   @Override
   public void setDriveVelocity(double velocityRadPerSec) {
     driveClosedLoop = true;
-    driveFFVolts = driveSimKs * Math.signum(velocityRadPerSec) + driveSimKv * velocityRadPerSec;
+    driveFFVolts = DriveConstants.driveSimKs * Math.signum(velocityRadPerSec)
+        + DriveConstants.driveSimKv * velocityRadPerSec;
     driveController.setSetpoint(velocityRadPerSec);
   }
 
