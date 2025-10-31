@@ -62,14 +62,23 @@
     "edu.wpi.first.math.**.proto.*",
     "edu.wpi.first.math.**.struct.*"
   ],
-  "editor.defaultFormatter": "richardwillis.vscode-spotless-gradle",
-  "[json]": {
-    "editor.defaultFormatter": "richardwillis.vscode-spotless-gradle"
-  },
   "[java]": {
     "editor.defaultFormatter": "redhat.java"
   },
+  "cSpell.words": [
+    "debouncers",
+    "dtheta",
+    "Megatag",
+    "Quasistatic",
+    "servoing",
+    "teleop",
+    "Uncomitted",
+    "URCL",
+    "wpilibj",
+    "WPILOG"
+  ],
   "editor.codeActionsOnSave": {
     "source.organizeImports": "explicit"
-  }
+  },
+  "files.trimTrailingWhitespace": true
 }
