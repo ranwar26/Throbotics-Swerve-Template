@@ -44,7 +44,7 @@ import frc.robot.MotorConfigs.DriveConfigs;
  * turn motor controller,
  * and duty cycle absolute encoder.
  */
-public class ModuleIOSpark implements ModuleIO {
+public class ModuleIOReal implements ModuleIO {
     private final Rotation2d zeroRotation;
 
     // Hardware objects
@@ -66,7 +66,7 @@ public class ModuleIOSpark implements ModuleIO {
     private final Debouncer driveConnectedDebounce = new Debouncer(0.5);
     private final Debouncer turnConnectedDebounce = new Debouncer(0.5);
 
-    public ModuleIOSpark(int module) {
+    public ModuleIOReal(int module) {
         zeroRotation = switch (module) {
             case 0 -> DriveConstants.frontLeftZeroRotation;
             case 1 -> DriveConstants.frontRightZeroRotation;
