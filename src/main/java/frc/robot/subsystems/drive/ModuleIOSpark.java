@@ -13,7 +13,10 @@
 
 package frc.robot.subsystems.drive;
 
+import frc.robot.MotorConfigs;
 import frc.robot.Constants.DriveConstants;
+import frc.robot.MotorConfigs.DriveConfigs;
+
 import static frc.robot.util.SparkUtil.*;
 
 import com.revrobotics.AbsoluteEncoder;
@@ -97,66 +100,19 @@ public class ModuleIOSpark implements ModuleIO {
         turnController = turnSpark.getClosedLoopController();
 
         // Configure drive motor
-        var driveConfig = new SparkFlexConfig();
-        driveConfig
-                .idleMode(IdleMode.kBrake)
-                .smartCurrentLimit(DriveConstants.driveMotorCurrentLimit)
-                .voltageCompensation(12.0);
-        driveConfig.encoder
-                .positionConversionFactor(DriveConstants.driveEncoderPositionFactor)
-                .velocityConversionFactor(DriveConstants.driveEncoderVelocityFactor)
-                .uvwMeasurementPeriod(10)
-                .uvwAverageDepth(2);
-        driveConfig.closedLoop
-                .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
-                .pidf(
-                        DriveConstants.driveKp, 0.0,
-                        DriveConstants.driveKd, 0.0);
-        driveConfig.signals
-                .primaryEncoderPositionAlwaysOn(true)
-                .primaryEncoderPositionPeriodMs((int) (1000.0 / DriveConstants.odometryFrequency))
-                .primaryEncoderVelocityAlwaysOn(true)
-                .primaryEncoderVelocityPeriodMs(20)
-                .appliedOutputPeriodMs(20)
-                .busVoltagePeriodMs(20)
-                .outputCurrentPeriodMs(20);
         tryUntilOk(
                 driveSpark,
                 5,
                 () -> driveSpark.configure(
-                        driveConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters));
+                        DriveConfigs.driveMotor, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters));
         tryUntilOk(driveSpark, 5, () -> driveEncoder.setPosition(0.0));
 
         // Configure turn motor
-        var turnConfig = new SparkMaxConfig();
-        turnConfig
-                .inverted(DriveConstants.turnInverted)
-                .idleMode(IdleMode.kBrake)
-                .smartCurrentLimit(DriveConstants.turnMotorCurrentLimit)
-                .voltageCompensation(12.0);
-        turnConfig.absoluteEncoder
-                .inverted(DriveConstants.turnEncoderInverted)
-                .positionConversionFactor(DriveConstants.turnEncoderPositionFactor)
-                .velocityConversionFactor(DriveConstants.turnEncoderVelocityFactor)
-                .averageDepth(2);
-        turnConfig.closedLoop
-                .feedbackSensor(FeedbackSensor.kAbsoluteEncoder)
-                .positionWrappingEnabled(true)
-                .positionWrappingInputRange(DriveConstants.turnPIDMinInput, DriveConstants.turnPIDMaxInput)
-                .pidf(DriveConstants.turnKp, 0.0, DriveConstants.turnKd, 0.0);
-        turnConfig.signals
-                .absoluteEncoderPositionAlwaysOn(true)
-                .absoluteEncoderPositionPeriodMs((int) (1000.0 / DriveConstants.odometryFrequency))
-                .absoluteEncoderVelocityAlwaysOn(true)
-                .absoluteEncoderVelocityPeriodMs(20)
-                .appliedOutputPeriodMs(20)
-                .busVoltagePeriodMs(20)
-                .outputCurrentPeriodMs(20);
         tryUntilOk(
                 turnSpark,
                 5,
                 () -> turnSpark.configure(
-                        turnConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters));
+                        DriveConfigs.turnMotor, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters));
 
         // Create odometry queues
         timestampQueue = SparkOdometryThread.getInstance().makeTimestampQueue();
