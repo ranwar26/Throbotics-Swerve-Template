@@ -68,5 +68,8 @@
   },
   "[java]": {
     "editor.defaultFormatter": "redhat.java"
+  },
+  "editor.codeActionsOnSave": {
+    "source.organizeImports": "explicit"
   }
 }

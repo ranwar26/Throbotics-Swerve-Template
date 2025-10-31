@@ -13,11 +13,12 @@
 
 package frc.robot.subsystems.drive;
 
-import frc.robot.MotorConfigs;
-import frc.robot.Constants.DriveConstants;
-import frc.robot.MotorConfigs.DriveConfigs;
+import static frc.robot.util.SparkUtil.ifOk;
+import static frc.robot.util.SparkUtil.sparkStickyFault;
+import static frc.robot.util.SparkUtil.tryUntilOk;
 
-import static frc.robot.util.SparkUtil.*;
+import java.util.Queue;
+import java.util.function.DoubleSupplier;
 
 import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.RelativeEncoder;
@@ -31,15 +32,12 @@ import com.revrobotics.spark.SparkClosedLoopController.ArbFFUnits;
 import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
-import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
-import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
-import com.revrobotics.spark.config.SparkFlexConfig;
-import com.revrobotics.spark.config.SparkMaxConfig;
+
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.math.geometry.Rotation2d;
-import java.util.Queue;
-import java.util.function.DoubleSupplier;
+import frc.robot.Constants.DriveConstants;
+import frc.robot.MotorConfigs.DriveConfigs;
 
 /**
  * Module IO implementation for Spark Flex drive motor controller, Spark Max
